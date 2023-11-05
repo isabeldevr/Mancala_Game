@@ -27,4 +27,4 @@ as well as the last seed that you just played on your side, into the store.
 
 The game is over when one player’s pits are completely empty. The other player takes the seeds
 remaining in her pits and puts those seeds in her store. Count up the seeds. Whoever has the most
-seeds wins
+seeds wins.
