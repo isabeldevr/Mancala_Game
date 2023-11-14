@@ -30,7 +30,7 @@ class Game:
                 self.board[row][col] = 4
 
         # Set player's cups to 0
-        self.board[1][0] = "\t CPU\n Home Pit"
+        self.board[1][0] = "\t Player 2 CPU\n Home Pit"
         self.board[2][0] = 0
         self.board[1][7] = 0
         self.board[2][7] = "\t Player 1\n Home Pit"
@@ -95,11 +95,13 @@ class Game:
                 col = 1
             self.board[row][col] = int(self.board[row][col]) + 1
             stones -= 1
+
         last_row, last_col = row, col
         continue_game = self.check_game_over()
-        if continue_game:
+        if not continue_game:
             self.stone_capture(last_row, last_col)
             self.current_player_update(last_row, last_col)
+
         ## WE SHOULD ALSO FIND A BETTER TRANSVERSAL METHOD
 
     def min_max_ai_player(self) -> (int, int):
@@ -155,6 +157,7 @@ class Game:
             self.board.print("Player 1 wins!")
         else:
             self.board.print("CPU wins!")
+        # for now we close the board when finished
         self.board.close()
         # ADD LINK TO RE-START OR QUIT FUNCTION
 
@@ -163,5 +166,5 @@ class Game:
 # 2. We need to fix the quit + restart button (so u can quit/restart at any time) + at the end of th game
 # 3. We need to refine the stone capture method (look at how they did in YT Video)
 # 4. We need to refine the transveral method (look at how they did in YT Video)
-# 5. We need to adjust the player update method (so that u cant clik outside your turn)
+# 5. We need to adjust the player update method (so that u cant clik outside your turn) + sometimes message not showing
 # 6. We need to add the stone images to the board (so layer the stones instead of the numbers)
