@@ -162,10 +162,9 @@ class Game:
         ## ADD LINK TO RE-START OR QUIT FUNCTION
 
 ## SOME NOTES
-
 # 1. We need to implement the min max player
-# 2. We need to fix the quit button (so u can quit at any time) + at the end of th game
-# 3. We need to fix the restart button
-# 4. We need to refine the stone capture method (look at how they did in YT Video)
-# 5. We need to refine the transveral method (look at how they did in YT Video)
-# 6. We need to refine the player update mtehod (not updating properly idk why)
+# 2. We need to fix the quit + restart button (so u can quit/restart at any time) + at the end of th game
+# 3. We need to refine the stone capture method (look at how they did in YT Video)
+# 4. We need to refine the transveral method (look at how they did in YT Video)
+# 5. We need to adjust the player update metehod (so that u cnanpt clik outside your turn)
+# 6. We need to add the stone images to the board (so layer the stones instead of the numbers)
