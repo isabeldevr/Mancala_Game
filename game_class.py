@@ -114,11 +114,11 @@ class MancalaGame:
                 print(self.board_dictionary[f"Player{self.current_player}_score"])
                 row = 3 - row
                 col = 0
-                if stones == 1:
-                    break
-            # Update the count of stones in the current cell
-            self.board_dictionary[f"Row_{row}"][col] += 1
-            stones -= 1
+                stones -= 1
+
+            else: # Update the count of stones in the current cell
+                self.board_dictionary[f"Row_{row}"][col] += 1
+                stones -= 1
 
         # Check if game over
         last_row, last_col = row, col
@@ -195,11 +195,11 @@ class MancalaGame:
                 points += 1
                 row = 3 - row
                 col = 0
-                if stones == 1:
-                    break
+                stones -= 1
             # Update the count of stones in the current cell
-            dictionary_copy[f"Row_{row}"][col] += 1
-            stones -= 1
+            else:
+                dictionary_copy[f"Row_{row}"][col] += 1
+                stones -= 1
 
         # check if we capture stones
         last_row, last_col = row, col
@@ -246,7 +246,8 @@ class MancalaGame:
         input: None
         output: bool"""
         for row in range(1, 3):
-            if self.board_dictionary[f"Row_{row}"] == [0, 0, 0, 0, 0, 0]:
+            if self.board_dictionary[f"Row_{row}"] == [0, 0, 0, 0, 0, 0] and self.board_dictionary[f"Player{row}_score"] > self.board_dictionary[f"Player{3-row}_score"]:
+                print("we are here")
                 return self.declare_winner(row)
         return False
 
@@ -254,6 +255,7 @@ class MancalaGame:
         """This method declares the winner
         input: first player to finish
         output: bool"""
+        self.board.cursor = None
         self.board.print(f"Player {player} wins! Congratulations! \n Press 'r' to restart or 'q' to quit")
         return True
 
@@ -261,6 +263,7 @@ class MancalaGame:
 # SOME NOTES
 # current player revise method (turns are a bit wonky, its not easy to see who is playing i want to introduce a delay )
 # Ask teacher what kind of dosc-strings he prefers
+# Handle draws
 # 6. We need to add the stone images to the board (so layer the stones instead of the numbers)
 #      -> `create a method for ths and put images into a list access according to necessity
 # 7.   Optimise the code (make it more efficient) where it says revise
