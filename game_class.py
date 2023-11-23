@@ -2,14 +2,17 @@ from game2dboard import Board
 import random
 import copy
 
+
 ROWS = 4
 COLUMNS = 8
 CELL_SIZE = 117
 CELL_SPACING = 10
-STONE_IMAGE_FILES = [f"{i}.png" for i in range(0, 48)] # TOMAS: 48 is the maximum stones u could ever have so we need up to 48 this sucks so sorry)
+PLAYER_1 = 1
+PLAYER_2 = 2
+STONE_IMAGE_FILES = [f"{i}.png" for i in range(0, 48)]
+# TOMAS: 48 is the maximum stones u could ever have, so we need up to 48 this sucks so sorry
 
-
-class Game:
+class MancalaGame:
 
     def __init__(self):
         self.current_player = None
@@ -32,18 +35,9 @@ class Game:
         """Initializes the game.
         input: None
         output: None. Calls the draw_board method with the initial board"""
-        # Initialize pits with 4 stones each
 
-        ### TOMÁS CHANGE THIS BY ALL IMAGES OF 4 FOR WHEN WE START THE GAME
-        for row in range(1, 3):
-            for col in range(1, 7):
-                self.board[row][col] = 4
-
-        # Set player's cups to 0
-        self.board[1][0] = "Player 1"
-        self.board[2][0] = 0
-        self.board[1][7] = 0
-        self.board[2][7] = "Player 2, You"
+        # Initialise the UI
+        self.initialise_board_ui()
 
         # Initialising the player: human player goes first
         self.current_player = 2
@@ -56,6 +50,20 @@ class Game:
             "Player1_score": 0,
             "Player2_score": 0,
         }
+
+    def initialise_board_ui(self):
+        """We initialise the state of the board's user interface
+        input: None
+        output: None """
+        for row in range(1, 3):
+            for col in range(1, 7):
+                self.board[row][col] = 4
+
+            # Set player's cups to 0
+        self.board[1][0] = "Player 1"
+        self.board[2][0] = 0
+        self.board[1][7] = 0
+        self.board[2][7] = "Player 2, You"
 
     def keyboard_command(self, key) -> None:
         """Handle quitting and re-start of game
@@ -75,7 +83,7 @@ class Game:
         """Handles mouse clicks
         input: btn, row clicked, col clicked
         output: None. Calls the moving_stones method"""
-        if self.current_player == 1:
+        if self.current_player == PLAYER_1:
             return None
 
         if self.board[row][col] == 0 or row != 2 or col in {0, 7} or row in {0, 3}:
@@ -83,7 +91,7 @@ class Game:
             return None
 
         self.board.print("")
-        return self.moving_stones(row, col)
+        self.moving_stones(row, col)
 
     def moving_stones(self, row: int, col: int) -> None:
         """Moves stones around the board:
@@ -94,7 +102,7 @@ class Game:
         start_col = col
         stones = self.board_dictionary[f"Row_{self.current_player}"][col]
 
-        # remove stones from pit
+        # Remove stones from pit
         self.board_dictionary[f"Row_{row}"][col] = 0
 
         while stones > 0:
@@ -103,15 +111,20 @@ class Game:
             # Check if we reached the end of the row
             if col >= len(self.board_dictionary[f"Row_{row}"]):
                 self.board_dictionary[f"Player{self.current_player}_score"] += 1
+                print(self.board_dictionary[f"Player{self.current_player}_score"])
                 row = 3 - row
                 col = 0
+                if stones == 1:
+                    break
             # Update the count of stones in the current cell
             self.board_dictionary[f"Row_{row}"][col] += 1
             stones -= 1
 
-        # Check if we can go again
+        # Check if game over
         last_row, last_col = row, col
         continue_game = self.check_game_over()
+
+        # If game can continue
         if not continue_game:
             self.stone_capture(start_row, start_col, last_row, last_col, self.board_dictionary)
             self.current_player_update(last_row, last_col)
@@ -126,10 +139,8 @@ class Game:
         for col in range(1, 7):
             self.board[1][COLUMNS - col - 1] = board_dictionary["Row_1"][col - 1]
             self.board[2][col] = board_dictionary["Row_2"][col - 1]
-            ## TOMÁS USE THIS LOOP TO UPDATE THE IMAGES
-        self.board[1][7] = board_dictionary["Player1_score"]
-        self.board[2][0] = board_dictionary["Player2_score"]
-
+        self.board[1][7] = board_dictionary["Player2_score"]
+        self.board[2][0] = board_dictionary["Player1_score"]
 
     def ai_player(self) -> (int, int):
         """This method is the AI player
@@ -140,7 +151,7 @@ class Game:
     def make_best_move(self, player_to_evaluate, depth) -> (int, int):
         """This method makes the best move
         input: player_to_evaluate, depth
-        output: best move coordinates (row, col)"""
+        output: best move (row, col)"""
 
         # base case to stop recursion
         if depth <= 0:
@@ -184,6 +195,8 @@ class Game:
                 points += 1
                 row = 3 - row
                 col = 0
+                if stones == 1:
+                    break
             # Update the count of stones in the current cell
             dictionary_copy[f"Row_{row}"][col] += 1
             stones -= 1
@@ -211,10 +224,10 @@ class Game:
         input: last row, last column
         output: None"""
         if last_row == 2 and last_col == 6:
-            self.current_player = 1
-            self.board.print("Player 1, CPU goes again!")
+            self.current_player = PLAYER_1
+            self.board.print("Player 1 goes again!")
         elif last_row == 1 and last_col == 0:
-            self.current_player = 2
+            self.current_player = PLAYER_2
             self.board.print("You can go again!")
             self.board.cursor = "arrow"
         else:
@@ -246,8 +259,8 @@ class Game:
 
 
 # SOME NOTES
-# current player revise method (turns are a bit wonky, its nit wasy to see who is playing i want to introduce a delay )
-# Ask teacher what kind of doscstrings he prefers
+# current player revise method (turns are a bit wonky, its not easy to see who is playing i want to introduce a delay )
+# Ask teacher what kind of dosc-strings he prefers
 # 6. We need to add the stone images to the board (so layer the stones instead of the numbers)
 #      -> `create a method for ths and put images into a list access according to necessity
 # 7.   Optimise the code (make it more efficient) where it says revise
