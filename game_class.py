@@ -246,7 +246,7 @@ class MancalaGame:
         input: None
         output: bool"""
         for row in range(1, 3):
-            if self.board_dictionary[f"Row_{row}"] == [0, 0, 0, 0, 0, 0] and self.board_dictionary[f"Player{row}_score"] > self.board_dictionary[f"Player{3-row}_score"]:
+            if (self.board_dictionary[f"Row_{row}"] == [0, 0, 0, 0, 0, 0] or self.board_dictionary[f"Row_{3-row}"] == [0, 0, 0, 0, 0, 0]) and self.board_dictionary[f"Player{row}_score"] > self.board_dictionary[f"Player{3-row}_score"]:
                 print("we are here")
                 return self.declare_winner(row)
         return False
