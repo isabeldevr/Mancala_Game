@@ -1,6 +1,75 @@
 from game2dboard import Board
 import random
 import copy
+class MCTSNode:
+    def __init__(self, state, parent=None):
+        self.state = state
+        self.parent = parent
+        self.children = []
+        self.visits = 0
+        self.wins = 0
+
+def mcts(root_state, iterations):
+    root = MCTSNode(root_state)
+
+    for _ in range(iterations):
+        node = root
+        while node.children:
+            node = select_child(node)
+        if node.visits == 0 and not node.state.game_over(): 
+            expand(node)
+            node = random.choice(node.children)
+        result = simulate(node.state)
+        backpropagate(node, result)
+
+    return best_child(root).state  # Return the best state after the search
+
+def select_child(node):
+    best_child = None
+    best_score = float("-inf")
+    for child in node.children:
+        exploration_term = # Calculate the exploration term (depends on visits)
+        exploitation_term = # Calculate the exploitation term (depends on wins/visits)
+        score = exploitation_term + exploration_term
+        if score > best_score:
+            best_score = score
+            best_child = child
+    return best_child
+
+
+def expand(node):
+    possible_moves = node.state.get_possible_moves()
+    for move in possible_moves:
+        new_state = node.state.make_move(move)
+        new_node = MCTSNode(new_state, parent=node)
+        node.children.append(new_node)
+
+def simulate(state):
+    # Simulate a game from the state
+    while not state.game_over():
+        # Perform random moves or a simple heuristic strategy
+        move = random.choice(state.get_possible_moves())
+        state.make_move(move)
+    # Return the result of the simulation (win/lose/draw)
+    return state.get_result()
+
+def backpropagate(node, result):
+    while node is not None:
+        node.visits += 1
+        if node.state.current_player == result:
+            node.wins += 1
+        node = node.parent
+
+
+def best_child(node):
+    best_child = None
+    best_score = float("-inf")
+    for child in node.children:
+        score = child.wins / child.visits 
+        if score > best_score:
+            best_score = score
+            best_child = child
+    return best_child
 
 
 ROWS = 4
