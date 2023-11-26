@@ -1,5 +1,6 @@
 from game2dboard import Board
 import random
+import math
 import copy
 class MCTSNode:
     def __init__(self, state, parent=None):
@@ -24,17 +25,19 @@ def mcts(root_state, iterations):
 
     return best_child(root).state  # Return the best state after the search
 
+
 def select_child(node):
     best_child = None
     best_score = float("-inf")
     for child in node.children:
-        exploration_term = # Calculate the exploration term (depends on visits)
-        exploitation_term = # Calculate the exploitation term (depends on wins/visits)
+        exploration_term = math.sqrt(math.log(node.visits) / child.visits)
+        exploitation_term = child.wins / child.visits
         score = exploitation_term + exploration_term
         if score > best_score:
             best_score = score
             best_child = child
     return best_child
+
 
 
 def expand(node):
