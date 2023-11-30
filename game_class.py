@@ -1,3 +1,5 @@
+import time
+
 from game2dboard import Board
 import random
 import copy
@@ -79,11 +81,21 @@ class MancalaGame:
         """Draws the board"""
         self.board.show()
 
+    def turn(self):
+        """This method is the turn of the human player"""
+        if self.current_player == 1:
+            self.board.cursor = None
+            row, col = self.ai_player()
+            print("ai plays:", row, col)
+            return self.moving_stones(row, col + 1)
+        else:
+            self.board.cursor = "arrow"
+
     def mouse_click(self, btn: int, row: int, col: int) -> None:
         """Handles mouse clicks
         input: btn, row clicked, col clicked
         output: None. Calls the moving_stones method"""
-        if self.current_player == PLAYER_1:
+        if self.current_player == 1:
             return None
 
         if self.board[row][col] == 0 or row != 2 or col in {0, 7} or row in {0, 3}:
@@ -101,22 +113,28 @@ class MancalaGame:
         col -= 1
         start_col = col
         stones = self.board_dictionary[f"Row_{self.current_player}"][col]
+        print("stones", stones)
 
         # Remove stones from pit
         self.board_dictionary[f"Row_{row}"][col] = 0
 
         while stones > 0:
+            print(self.board_dictionary)
             # Move to the next column
             col += 1
+
             # Check if we reached the end of the row
             if col >= len(self.board_dictionary[f"Row_{row}"]):
                 self.board_dictionary[f"Player{self.current_player}_score"] += 1
                 print(self.board_dictionary[f"Player{self.current_player}_score"])
-                row = 3 - row
-                col = 0
                 stones -= 1
+                row = 3 - row
+                col = -1
+                if stones == 0:
+                    break
 
-            else: # Update the count of stones in the current cell
+            # Update the count of stones in the current cell
+            else:
                 self.board_dictionary[f"Row_{row}"][col] += 1
                 stones -= 1
 
@@ -127,10 +145,10 @@ class MancalaGame:
         # If game can continue
         if not continue_game:
             self.stone_capture(start_row, start_col, last_row, last_col, self.board_dictionary)
-            self.current_player_update(last_row, last_col)
+            # self.board_update(self.board_dictionary)
 
-        # Update the board
-        return self.board_update(self.board_dictionary)
+        # Update the player
+        return self.current_player_update(last_row, last_col)
 
     def board_update(self, board_dictionary: dict) -> None:
         """Updates the board
@@ -187,19 +205,18 @@ class MancalaGame:
         col = move[1]
 
         while stones > 0:
-            # Move to the next column
-            col += 1
-            # Check if we reached the end of the row
             if col >= len(dictionary_copy[f"Row_{row}"]):
                 dictionary_copy[f"Player{self.current_player}_score"] += 1
-                points += 1
+                print(dictionary_copy[f"Player{self.current_player}_score"])
+                stones -= 1
                 row = 3 - row
-                col = 0
-                stones -= 1
+                col = -1
+                if stones == 0:
+                    break
+
             # Update the count of stones in the current cell
-            else:
-                dictionary_copy[f"Row_{row}"][col] += 1
-                stones -= 1
+            dictionary_copy[f"Row_{row}"][col] += 1
+            stones -= 1
 
         # check if we capture stones
         last_row, last_col = row, col
@@ -224,10 +241,10 @@ class MancalaGame:
         input: last row, last column
         output: None"""
         if last_row == 2 and last_col == 6:
-            self.current_player = PLAYER_1
+            self.current_player = 1
             self.board.print("Player 1 goes again!")
         elif last_row == 1 and last_col == 0:
-            self.current_player = PLAYER_2
+            self.current_player = 2
             self.board.print("You can go again!")
             self.board.cursor = "arrow"
         else:
@@ -235,11 +252,19 @@ class MancalaGame:
 
         # Move the following line outside the if condition
         self.board.print("Player {}'s turn".format(self.current_player))
+        print("we are here 2")
 
+        self.board_update(self.board_dictionary)
+        # waiting
+        self.turn()
+        # update the board
+        return None
+
+        """ 
         if self.current_player == 1:
             self.cursor = None
             row, col = self.ai_player()
-            return self.moving_stones(row, col + 1)
+            return self.moving_stones(row, col + 1)"""
 
     def check_game_over(self) -> bool:
         """Checks if the game is over and if so declares a winner. First to finish is always the winner.
@@ -258,6 +283,16 @@ class MancalaGame:
         self.board.cursor = None
         self.board.print(f"Player {player} wins! Congratulations! \n Press 'r' to restart or 'q' to quit")
         return True
+
+
+# SOME NOTES
+# current player revise method (turns are a bit wonky, its not easy to see who is playing i want to introduce a delay )
+# Ask teacher what kind of dosc-strings he prefers
+# Handle draws
+# 6. We need to add the stone images to the board (so layer the stones instead of the numbers)
+#      -> `create a method for ths and put images into a list access according to necessity
+# 7.   Optimise the code (make it more efficient) where it says revise
+#  8. make so that u cannot land in opponents points (just make sure)
 
 
 # SOME NOTES
