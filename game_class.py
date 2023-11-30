@@ -11,8 +11,14 @@ CELL_SIZE = 117
 CELL_SPACING = 10
 PLAYER_1 = 1
 PLAYER_2 = 2
-STONE_IMAGE_FILES = [f"{i}.png" for i in range(0, 48)]
-# TOMAS: 48 is the maximum stones u could ever have, so we need up to 48 this sucks so sorry
+STONE_IMAGE_FILES = [f"{i}.png" for i in range(0, 48)] # CHANGE?
+
+class TreeNode:
+    def __init__(self, player, move=None):
+        self.player = player
+        self.score = 0
+        self.move = move
+        self.children = []
 
 class MancalaGame:
 
@@ -145,7 +151,6 @@ class MancalaGame:
         # If game can continue
         if not continue_game:
             self.stone_capture(start_row, start_col, last_row, last_col, self.board_dictionary)
-            # self.board_update(self.board_dictionary)
 
         # Update the player
         return self.current_player_update(last_row, last_col)
@@ -195,6 +200,7 @@ class MancalaGame:
         """ This method evaluates the move
         input: move, depth of recursion
         output: points obtained for the move"""
+
         dictionary_copy = copy.deepcopy(self.board_dictionary)
         points = 0
         stones = dictionary_copy[f"Row_{self.current_player}"][move[1]]
@@ -205,8 +211,13 @@ class MancalaGame:
         col = move[1]
 
         while stones > 0:
+            # Move to the next column
+            col += 1
+
+            # Check if we reached the end of the row
             if col >= len(dictionary_copy[f"Row_{row}"]):
                 dictionary_copy[f"Player{self.current_player}_score"] += 1
+                points += 1
                 print(dictionary_copy[f"Player{self.current_player}_score"])
                 stones -= 1
                 row = 3 - row
@@ -215,8 +226,9 @@ class MancalaGame:
                     break
 
             # Update the count of stones in the current cell
-            dictionary_copy[f"Row_{row}"][col] += 1
-            stones -= 1
+            else:
+                dictionary_copy[f"Row_{row}"][col] += 1
+                stones -= 1
 
         # check if we capture stones
         last_row, last_col = row, col
@@ -226,6 +238,7 @@ class MancalaGame:
             opponent_moves = self.make_best_move(3 - self.current_player, depth - 1)
             points -= self.evaluate_move(opponent_moves, depth - 1)
         return points
+
 
     def stone_capture(self, start_row: int, start_col: int, last_row: int, last_col: int, dictionary: dict) -> None:
         """ Checks if we can capture stones by checking if we land in an empty pit on our side
@@ -240,6 +253,7 @@ class MancalaGame:
         """Updates the current player based on the last move
         input: last row, last column
         output: None"""
+
         if last_row == 2 and last_col == 6:
             self.current_player = 1
             self.board.print("Player 1 goes again!")
@@ -252,19 +266,12 @@ class MancalaGame:
 
         # Move the following line outside the if condition
         self.board.print("Player {}'s turn".format(self.current_player))
-        print("we are here 2")
-
         self.board_update(self.board_dictionary)
-        # waiting
+
+        # Check whose turn it is
         self.turn()
-        # update the board
         return None
 
-        """ 
-        if self.current_player == 1:
-            self.cursor = None
-            row, col = self.ai_player()
-            return self.moving_stones(row, col + 1)"""
 
     def check_game_over(self) -> bool:
         """Checks if the game is over and if so declares a winner. First to finish is always the winner.
@@ -283,16 +290,6 @@ class MancalaGame:
         self.board.cursor = None
         self.board.print(f"Player {player} wins! Congratulations! \n Press 'r' to restart or 'q' to quit")
         return True
-
-
-# SOME NOTES
-# current player revise method (turns are a bit wonky, its not easy to see who is playing i want to introduce a delay )
-# Ask teacher what kind of dosc-strings he prefers
-# Handle draws
-# 6. We need to add the stone images to the board (so layer the stones instead of the numbers)
-#      -> `create a method for ths and put images into a list access according to necessity
-# 7.   Optimise the code (make it more efficient) where it says revise
-#  8. make so that u cannot land in opponents points (just make sure)
 
 
 # SOME NOTES
