@@ -151,9 +151,9 @@ class MancalaGame:
         # If game can continue
         if not continue_game:
             self.stone_capture(start_row, start_col, last_row, last_col, self.board_dictionary)
-
-        # Update the player
-        return self.current_player_update(last_row, last_col)
+            return self.current_player_update(last_row, last_col)
+        else:
+            return self.board_update(self.board_dictionary)
 
     def board_update(self, board_dictionary: dict) -> None:
         """Updates the board
@@ -182,8 +182,13 @@ class MancalaGame:
 
         possible_moves = self.possible_moves_by_player(player_to_evaluate)
         if possible_moves:
+            import heapq
+            max_heap = []
             # Evaluate each move and choose the one with the highest score
-            best_move = max(possible_moves, key=lambda move: self.evaluate_move(move, depth=depth-1))
+            for move in possible_moves:
+                points = self.evaluate_move(move, depth)
+                heapq.heappush(max_heap, (-points, move))
+            score, best_move = heapq.heappop(max_heap)
             print(best_move)
             return best_move[0], best_move[1]
 
@@ -280,16 +285,19 @@ class MancalaGame:
         for row in range(1, 3):
             if (self.board_dictionary[f"Row_{row}"] == [0, 0, 0, 0, 0, 0] or self.board_dictionary[f"Row_{3-row}"] == [0, 0, 0, 0, 0, 0]) and self.board_dictionary[f"Player{row}_score"] > self.board_dictionary[f"Player{3-row}_score"]:
                 print("we are here")
-                return self.declare_winner(row)
+                print("winner", row)
+                self.declare_winner(row)
+                return True
         return False
 
-    def declare_winner(self, player: int) -> bool:
+    def declare_winner(self, player: int) -> None:
         """This method declares the winner
         input: first player to finish
         output: bool"""
+        print("Enter win function")
         self.board.cursor = None
         self.board.print(f"Player {player} wins! Congratulations! \n Press 'r' to restart or 'q' to quit")
-        return True
+        return None
 
 
 # SOME NOTES
