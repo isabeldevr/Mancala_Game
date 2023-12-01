@@ -1,3 +1,5 @@
+import time
+
 from game2dboard import Board
 import copy
 import leaderboard
@@ -111,7 +113,7 @@ class MancalaGame:
         if self.current_player == 1:
             self.board.cursor = None
             row, col = self.ai_player()
-            return self.moving_stones(row, col + 1)
+            return self.mouse_click(1,row, col + 1)
         else:
             self.board.cursor = "arrow"
 
@@ -119,22 +121,34 @@ class MancalaGame:
         """ Handles mouse clicks
         Input: btn, row clicked, col clicked
         Output: None. Calls the moving_stones method"""
-        try:
-            # Handle wrong turn clicks
-            if self.current_player == 1:
-                return None
+        # detach the mouse click handler
+        # we need to return None at this stage but keep running the game
+        # proceed with code execution
+        import threading
+        def do(row, col):
+            try:
+                # Handle wrong turn clicks
+                if self.current_player == 1:
+                    time.sleep(5)
+                    print("sleeping")
+                    self.board.cursor = None
+                    return self.moving_stones(row, col)
 
-            # Check if the click is valid
-            if self.board[row][col] == 0 or row != 2 or col in {0, 7} or row in {0, 3}:
-                self.board.print("Invalid move! Try again.")
-                return None
+                # Check if the click is valid
+                if self.board[row][col] == 0 or row != 2 or col in {0, 7} or row in {0, 3}:
+                    self.board.print("Invalid move! Try again.")
+                    return None
 
-            # Call the moving_stones method
-            self.board.print("")
-            self.moving_stones(row, col)
+                # Call the moving_stones method
+                self.board.print("")
+                self.board.cursor = "arrow"
+                return self.moving_stones(row, col)
 
-        except Exception as e:
-            print(f"An error occurred: {e}")
+            except Exception as e:
+                print(f"An error occurred: {e}")
+        run = threading.Thread(target=do, args=(row, col))
+        run.start()
+        return None
 
     def moving_stones(self, row: int, col: int) -> None:
         """ Moves stones around the board:
@@ -173,6 +187,7 @@ class MancalaGame:
             # If game can continue
             if not end_game:
                 self.stone_capture(start_row, start_col, last_row, last_col, self.board_dictionary)
+
                 self.board_update(self.board_dictionary)
                 return self.current_player_update(last_row, last_col)
             else:
