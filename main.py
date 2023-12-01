@@ -1,6 +1,7 @@
-from game_class import Game
+from game_class import MancalaGame
+
 def main():
-    game = Game()
+    game = MancalaGame()
     game.start()
     game.draw_board()
 
