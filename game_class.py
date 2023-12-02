@@ -1,5 +1,4 @@
 import time
-
 from game2dboard import Board
 import copy
 import leaderboard
