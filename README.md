@@ -38,7 +38,7 @@
 
 - Count seeds in the store; player with the most seeds wins.
 
-## Implementation:
+## Key Data Structures:
 
 ### Matrices:
 
