@@ -1,4 +1,3 @@
-
 # Mancala Game
 
 ## Rules of the Game
@@ -41,39 +40,30 @@
 
 ## Implementation:
 
-### Initializing the Game:
-
-- Initialize pits with stones using nested loops (2x6). Complexity: O(1).
-
-### Handling Player Inputs:
-
-- Methods handle user inputs and perform validation.
-
-### Moving Stones:
-
-- Stone movement based on the number of stones and their path. Worst-case complexity: O(stones).
-
-### Stone Capture:
-
-- Checks conditions to capture stones. Complexity depends on conditions and stone count. Worst case: O(1) or O(n).
-
-### Game Over Check:
-
-- Checks if all pits for a player are empty. Complexity: O(1) or O(n).
-
-### Declaring Winner:
-
-- Print winner and close the board. Complexity: O(1).
-
-## Key Data Structures:
-
-### Matrices:
+# Matrices:
 
 - Represent the game board; used to store the visual/image representation of the number of stones in each pit.
 - Accessed and modified to visually simulate stone movement.
 
-### Dictionary (board_update method):
+# Dictionary (board_update method):
 
 - Serves to easily simulate the counterclockwise movement of mancala.
 - Helps the visual board representation by translating board_dictionary to respective pits and scores in the matrix.
 - Manages the logical state of the board independently of the visual interface.
+
+# Tree (AI player)
+- Dynamically created to evaluate each possible move
+- Serves to visualise the possible upcoming moves
+- This helps the AI evaluate what move would lead to the best outcome
+
+
+## Key Algorithms:
+
+# DFS sum
+- Used to transverse the tree of possible moves 
+- It adds the score by the human player (as a loss) and the ai (as a gain) to check what combination would be best. 
+- The entire implementation of the AI player includes a depth parameter that can be adjusted to make the ai think more turns ahead.
+
+# Merge sort
+- Used to sort the leaderboard kept in leaderboard.txt
+- This algorithm was chosen because of its time complexity characteristics reaching at worst 0(nlogn)
