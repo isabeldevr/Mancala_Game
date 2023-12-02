@@ -2,7 +2,6 @@ import time
 import traceback
 from game2dboard import Board
 from leaderboard import LeaderboardUI
-from rock_stack import *
 import copy
 
 ROWS = 4
@@ -70,7 +69,7 @@ class MancalaGame:
             "Row_2": [4, 4, 4, 4, 4, 4],
             "Player1_score": 0,
             "Player2_score": 0,
-        }
+                }
 
     def initialise_board_ui(self):
         """ We initialise the state of the board's user interface
@@ -213,10 +212,9 @@ class MancalaGame:
         Input: board_dictionary
         Output: None
         Time complexity: O(n) """
-        rocks = RockStack()
         for col in range(1, 7):
             self.board[1][COLUMNS - col - 1] = board_dictionary["Row_1"][col - 1]
-            self.board[2][col] = rocks.stack_images(board_dictionary["Row_2"][col - 1], 2, col)
+            self.board[2][col] = board_dictionary["Row_2"][col - 1]
         self.board[1][7] = board_dictionary["Player2_score"]
         self.board[2][0] = board_dictionary["Player1_score"]
 
@@ -260,10 +258,7 @@ class MancalaGame:
         Input: player_to_evaluate
         Output: list
         Time complexity: O(1)"""
-        values = []
-        for col in range(6):
-            values.append((player_to_evaluate, col))
-        return values
+        return [(player_to_evaluate, col) for col in range(6)]
 
     def evaluate_move(self, root, player_to_evaluate, move, depth) -> int:
         """ This method evaluates the move
@@ -304,10 +299,8 @@ class MancalaGame:
         self.stone_capture(move[0], move[1], last_row, last_col, dictionary_copy)
 
         # Create nodes
-        if player_to_evaluate == self.current_player:
-            root.children.append(TreeNode(player_to_evaluate, points, move))
-        else:
-            root.children.append(TreeNode(player_to_evaluate, -points, move))
+        points = -points if player_to_evaluate != self.current_player else points
+        root.children.append(TreeNode(player_to_evaluate, points, move))
 
         # Check if recursion should continue
         if depth > 0:
@@ -323,6 +316,7 @@ class MancalaGame:
         Time complexity: O(1) """
         if start_row == last_row and start_col != last_col and dictionary[f"Row_{last_row}"][last_col] == 1:
             dictionary[f"Row_{last_row}"][last_col] += dictionary[f"Row_{3 - last_row}"][last_col]
+            dictionary[f"Row_{3 - last_row}"][last_col] = 0
         return None
 
     def current_player_update(self, last_row: int, last_col: int) -> None:
@@ -369,7 +363,6 @@ class MancalaGame:
         self.board.cursor = None
         self.board.print(f"Player {player} wins! \n Press 'r' to restart, 'q' to quit or 'l' to see the leaderboard")
         return None
-
 
 # SOME NOTES
 # The time complexities for stone
