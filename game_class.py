@@ -9,6 +9,7 @@ COLUMNS = 8
 CELL_SIZE = 117
 CELL_SPACING = 10
 FINAL_ROUND_SCORE = 0
+COLOR = "bisque"
 
 
 class TreeNode:
@@ -41,7 +42,7 @@ class MancalaGame:
         self.board.margin = 0
         self.board.background_image = "mancala_board.png"
         if not self.board.background_image:
-            self.board.cell_color = "bisque"
+            self.board.cell_color = COLOR
         self.board.create_output(background_color="black", color="bisque", font_size=12)
         self.board.on_start = self.start
         self.board.on_key_press = self.keyboard_command
@@ -195,7 +196,6 @@ class MancalaGame:
 
             # Check if game over
             last_row, last_col = row, col
-            print(last_row, last_col)
             end_game = self.check_game_over()
 
             # If game can continue
@@ -371,6 +371,11 @@ class MancalaGame:
         self.board.cursor = None
         self.board.print(f"Player {player} wins! \n Press 'r' to restart, 'q' to quit or 'l' to see the leaderboard")
         return None
+
+# SOME NOTES
+# The time complexities for stone
+# Handle draws
+# 6. We need to add the stone images to the board (so layer the stones instead of the numbers)
 
 # SOME NOTES
 # The time complexities for stone
