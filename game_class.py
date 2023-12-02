@@ -113,6 +113,7 @@ class MancalaGame:
         if self.current_player == 1:
             self.board.cursor = None
             row, col = self.ai_player()
+            self.board.print("Player 1 is thinking...")
             return self.mouse_click(1,row, col + 1)
         else:
             self.board.cursor = "arrow"
