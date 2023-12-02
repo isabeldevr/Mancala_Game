@@ -2,6 +2,7 @@ import time
 import traceback
 from game2dboard import Board
 from leaderboard import LeaderboardUI
+from rock_stack import *
 import copy
 
 ROWS = 4
@@ -87,9 +88,9 @@ class MancalaGame:
         self.board[2][7] = "Player 2\n  You"
 
 
-    def leaderboard_display(self) -> None:
+    def leaderboard_display(self, final_points, game_over) -> None:
         leaderboard_ui = LeaderboardUI()
-        leaderboard_ui.show_leaderboard_options(FINAL_ROUND_SCORE)
+        return leaderboard_ui.show_leaderboard_options(final_points, game_over)
 
 
     def keyboard_command(self, key) -> None:
@@ -97,17 +98,14 @@ class MancalaGame:
         Input: key pressed
         Output: None. Calls the start or quit method
         Time complexity: O(1)"""
-        global FINAL_ROUND_SCORE
         try:
             if key == "q":
                 self.board.close()
-                FINAL_ROUND_SCORE = 0
             elif key == "r":
                 self.board.clear()
                 self.start()
-                FINAL_ROUND_SCORE = 0
             elif key == "l":
-                self.leaderboard_display()
+                self.leaderboard_display(self.board_dictionary[f"Player{self.current_player}_score"], self.check_game_over())
         except Exception as e:
             print(f"An error occurred: {e}", traceback.format_exc())
 
@@ -215,9 +213,10 @@ class MancalaGame:
         Input: board_dictionary
         Output: None
         Time complexity: O(n) """
+        rocks = RockStack()
         for col in range(1, 7):
             self.board[1][COLUMNS - col - 1] = board_dictionary["Row_1"][col - 1]
-            self.board[2][col] = board_dictionary["Row_2"][col - 1]
+            self.board[2][col] = rocks.stack_images(board_dictionary["Row_2"][col - 1], 2, col)
         self.board[1][7] = board_dictionary["Player2_score"]
         self.board[2][0] = board_dictionary["Player1_score"]
 
@@ -357,7 +356,6 @@ class MancalaGame:
             if (self.board_dictionary[f"Row_{row}"] == [0, 0, 0, 0, 0, 0] or self.board_dictionary[
                 f"Row_{3 - row}"] == [0, 0, 0, 0, 0, 0]) and self.board_dictionary[f"Player{row}_score"] > \
                     self.board_dictionary[f"Player{3 - row}_score"]:
-                FINAL_ROUND_SCORE = self.board_dictionary[f"Player{row}_score"]
                 self.declare_winner(row)
                 return True
         return False
@@ -372,10 +370,6 @@ class MancalaGame:
         self.board.print(f"Player {player} wins! \n Press 'r' to restart, 'q' to quit or 'l' to see the leaderboard")
         return None
 
-# SOME NOTES
-# The time complexities for stone
-# Handle draws
-# 6. We need to add the stone images to the board (so layer the stones instead of the numbers)
 
 # SOME NOTES
 # The time complexities for stone

@@ -122,7 +122,7 @@ class LeaderboardUI:
         easygui.msgbox("Goodbye! :)")
         quit()
 
-    def show_leaderboard_options(self, points) -> None:
+    def show_leaderboard_options(self, points, game_over) -> None:
         """ Show options for the leaderboard
         Input: None
         Output: None
@@ -131,8 +131,8 @@ class LeaderboardUI:
         choice = easygui.buttonbox("Select an option", "Leaderboard Options", choices=choices)
 
         if choice == "Submit Score":
-            if points == 0:
-                easygui.msgbox("You have no points to submit! Play a game to earn points!")
+            if game_over == False:
+                easygui.msgbox("You can't submit a score if the game is not over!")
             else:
                 self.submit_score(points)
         elif choice == "View Leaderboard":
