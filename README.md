@@ -1,6 +1,6 @@
 # Mancala Game
 
-Please note in Toma's branch you may find an extended versio  of this game with a more complete UI implementation.
+Please note in Toma's branch you may find an extended version of this game with a more complete UI implementation. We recommend only running if on windows.
 
 ## Rules of the Game
 
