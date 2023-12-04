@@ -200,7 +200,6 @@ class MancalaGame:
 
             # Check if game over
             last_row, last_col = row, col
-            print(last_row, last_col)
             end_game = self.check_game_over()
 
             # If game can continue
