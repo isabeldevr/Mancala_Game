@@ -1,6 +1,6 @@
 import os
 import random
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFont, ImageEnhance
 
 
 rock_components_path = "img/rocks/base"
@@ -56,16 +56,11 @@ def stack_images(amount: int, row: int, col: int, round_counter: int, board: obj
         scale_factor = float("{0:.2f}".format(random.uniform(0.80, 1.10)))
         selected_image = scale_image(selected_image, scale_factor)
 
-        if final_image is None:
-            final_image = selected_image
-        else:
-            final_image.paste(selected_image, (0, 0), selected_image)
+        final_image.paste(selected_image, (0, 0), selected_image)
 
     final_image = stack_number_on_image(final_image, amount)
-    # set_list.append(f'img/rocks/stacked_rocks_{row}_{col}_rnd{round_counter}.png')
     final_image.save(f'img/rocks/stacked_rocks_{row}_{col}_rnd{round_counter}.png')
     if board: board[row][col] = None
-    # if board: board.pause(300)
     return f'rocks/stacked_rocks_{row}_{col}_rnd{round_counter}'
 
 

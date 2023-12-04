@@ -57,6 +57,7 @@ class MancalaGame:
         self.board_dictionary = {}
         self.fastmode = 0
         self.board.cursor = "arrow"
+        self.img_cleanup()
 
     def start(self) -> None:
         """ Initializes the game.
@@ -80,6 +81,13 @@ class MancalaGame:
         }
 
 
+    def img_cleanup(self):
+        for filename in os.listdir('img/rocks'):
+            file_path = os.path.join('img/rocks', filename)
+            if os.path.isfile(file_path):
+                os.remove(file_path)
+
+
     def initialise_board_ui(self):
         """ We initialise the state of the board's user interface
         Input: None
@@ -98,7 +106,7 @@ class MancalaGame:
 
     def leaderboard_display(self, final_points, game_over) -> None:
         leaderboard_ui = LeaderboardUI()
-        return leaderboard_ui.show_leaderboard_options(final_points, game_over)
+        return leaderboard_ui.show_leaderboard_options(final_points, game_over, self.username)
 
 
     def keyboard_command(self, key) -> None:
@@ -179,15 +187,11 @@ class MancalaGame:
 
 
     def moving_stones(self, row: int, col: int) -> None:
-        directory_path = 'img/rocks'
-        for filename in os.listdir(directory_path):
-            file_path = os.path.join(directory_path, filename)
-            if os.path.isfile(file_path):
-                os.remove(file_path)
         """ Moves stones around the board:
         Input: row of chosen cell, column  of chosen cell
         Output: None. Calls the board_update method
         Time complexity: O(n) """
+        self.img_cleanup()
         try:
             col -= 1
             start_row, start_col = row, col
@@ -394,7 +398,9 @@ class MancalaGame:
         Time complexity: O(1) """
         self.board_update(self.board_dictionary)
         self.board.cursor = None
-        self.board.print(f"Player {player} wins! \n Press 'r' to restart, 'q' to quit or 'l' to see the leaderboard")
+        final_message = "[r] - Restart           [q] - Quit           [l] - Leaderboard"
+        if player == 2: self.board.print(f"{self.username} wins!\n{final_message}")
+        else: self.board.print(f"The Bot wins!\n{final_message}")
         return None
 
 

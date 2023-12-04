@@ -73,7 +73,7 @@ def merge(left, right) -> list:
 
     # Compare the elements of the two halves
     while i < len(left) and j < len(right):
-        if left[i][1] < right[j][1]:
+        if left[i][1] > right[j][1]:
             merged.append(left[i])
             i += 1
         else:
@@ -103,12 +103,11 @@ class LeaderboardUI:
             leaderboard_text = "No records yet! Play a game to add a record."
         easygui.msgbox(leaderboard_text, "Leaderboard")
 
-    def submit_score(self, points) -> None:
+    def submit_score(self, points, name) -> None:
         """ Submit the score to the leaderboard
         Input: points (int) - the number of points the player has
         Output: None
         Time Complexity: O(1)"""
-        name = easygui.enterbox("Enter your name:")
         if name:
             leaderboard_append(name, points)
             self.populate_leaderboard()
@@ -122,7 +121,7 @@ class LeaderboardUI:
         easygui.msgbox("Goodbye! :)")
         quit()
 
-    def show_leaderboard_options(self, points, game_over) -> None:
+    def show_leaderboard_options(self, points, game_over, name) -> None:
         """ Show options for the leaderboard
         Input: None
         Output: None
@@ -134,7 +133,7 @@ class LeaderboardUI:
             if game_over == False:
                 easygui.msgbox("You can't submit a score if the game is not over!")
             else:
-                self.submit_score(points)
+                self.submit_score(points, name)
         elif choice == "View Leaderboard":
             self.populate_leaderboard()
         elif choice == "Quit":
