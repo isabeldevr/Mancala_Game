@@ -1,5 +1,7 @@
 # Mancala Game
 
+Please note in Toma's branch you may find an extended versio  of this game with a more complete UI implementation.
+
 ## Rules of the Game
 
 ### Game Setup:
