@@ -69,13 +69,13 @@ class MancalaGame:
             "Row_2": [4, 4, 4, 4, 4, 4],
             "Player1_score": 0,
             "Player2_score": 0,
-        }
+                }
 
     def initialise_board_ui(self):
         """ We initialise the state of the board's user interface
         Input: None
         Output: None
-        Time complexity: O(1)"""
+        Time complexity worst & average case: O(1)"""
         for row in range(1, 3):
             for col in range(1, 7):
                 self.board[row][col] = 4
@@ -86,28 +86,24 @@ class MancalaGame:
         self.board[1][7] = 0
         self.board[2][7] = "Player 2\n  You"
 
-
-    def leaderboard_display(self) -> None:
+    def leaderboard_display(self, final_points, game_over) -> None:
         leaderboard_ui = LeaderboardUI()
-        leaderboard_ui.show_leaderboard_options(FINAL_ROUND_SCORE)
+        return leaderboard_ui.show_leaderboard_options(final_points, game_over)
 
 
     def keyboard_command(self, key) -> None:
         """ Handle quitting and re-start of game
         Input: key pressed
         Output: None. Calls the start or quit method
-        Time complexity: O(1)"""
-        global FINAL_ROUND_SCORE
+        Time complexity worst & average case: O(1)"""
         try:
             if key == "q":
                 self.board.close()
-                FINAL_ROUND_SCORE = 0
             elif key == "r":
                 self.board.clear()
                 self.start()
-                FINAL_ROUND_SCORE = 0
             elif key == "l":
-                self.leaderboard_display()
+                self.leaderboard_display(self.board_dictionary[f"Player{self.current_player}_score"], self.check_game_over())
         except Exception as e:
             print(f"An error occurred: {e}", traceback.format_exc())
 
@@ -122,7 +118,7 @@ class MancalaGame:
         """ This method is the turn of the human player
         Input: None
         Output: None. Calls the ai_player method
-        Time complexity: O(1)"""
+        Time complexity worst & average case: O(1)"""
         if self.current_player == 1:
             self.board.cursor = None
             self.board.print("Player 1 is thinking...")
@@ -135,13 +131,13 @@ class MancalaGame:
         """ Handles mouse clicks
         Input: btn, row clicked, col clicked
         Output: None. Calls the moving_stones method
-        Time complexity: O(1) """
+        Time complexity worst & average case: O(1) """
         import threading
         def do(row, col):
             try:
                 # Handle Player 1's turn
                 if self.current_player == 1:
-                    time.sleep(4)
+                    time.sleep(2)
                     self.board.cursor = None
                     return self.moving_stones(row, col)
 
@@ -167,7 +163,7 @@ class MancalaGame:
         """ Moves stones around the board:
         Input: row of chosen cell, column  of chosen cell
         Output: None. Calls the board_update method
-        Time complexity: O(n) """
+        Time complexity worst case & average case: O(n) where n is the number of stones in the chosen cell """
         try:
             col -= 1
             start_row, start_col = row, col
@@ -196,7 +192,6 @@ class MancalaGame:
 
             # Check if game over
             last_row, last_col = row, col
-            print(last_row, last_col)
             end_game = self.check_game_over()
 
             # If game can continue
@@ -215,7 +210,7 @@ class MancalaGame:
         """ Updates the board
         Input: board_dictionary
         Output: None
-        Time complexity: O(n) """
+        Time complexity: O(n) where n is the number of columns in the board """
         for col in range(1, 7):
             self.board[1][COLUMNS - col - 1] = board_dictionary["Row_1"][col - 1]
             self.board[2][col] = board_dictionary["Row_2"][col - 1]
@@ -226,15 +221,19 @@ class MancalaGame:
         """ This method is the AI player
         Input: None
         Output: best move coordinates (row, col)
-        Time complexity: O(b^d) where b is the branching factor and d is the depth of the tree"""
-        root = TreeNode(None)  # we create a root node
+        Time complexity: O(b^d) where b is the branching factor and d is the depth of the tree.
+        This is not a desirable time complexity, but since the branching factor is small (6) and the depth is also small (3),
+        the code is not greatly affected"""
+        root = TreeNode(None)
         return self.make_best_move(root, self.current_player, 3)
 
     def make_best_move(self, root, player_to_evaluate, depth) -> (int, int):
         """ This method makes the best move
         Input: player_to_evaluate, depth
         Output: best move (row, col)
-        Time complexity: O(c * b * d) where c is the cost of evaluating a node"""
+        Time complexity: O(c * b * d) where c is the cost of evaluating a node (so performing the path sum),
+        b is the branching factor and d is the depth of the tree.
+        """
         if depth == 0:
             return None
 
@@ -262,10 +261,7 @@ class MancalaGame:
         Input: player_to_evaluate
         Output: list
         Time complexity: O(1)"""
-        values = []
-        for col in range(6):
-            values.append((player_to_evaluate, col))
-        return values
+        return [(player_to_evaluate, col) for col in range(6)]
 
     def evaluate_move(self, root, player_to_evaluate, move, depth) -> int:
         """ This method evaluates the move
@@ -306,10 +302,8 @@ class MancalaGame:
         self.stone_capture(move[0], move[1], last_row, last_col, dictionary_copy)
 
         # Create nodes
-        if player_to_evaluate == self.current_player:
-            root.children.append(TreeNode(player_to_evaluate, points, move))
-        else:
-            root.children.append(TreeNode(player_to_evaluate, -points, move))
+        points = -points if player_to_evaluate != self.current_player else points
+        root.children.append(TreeNode(player_to_evaluate, points, move))
 
         # Check if recursion should continue
         if depth > 0:
@@ -322,16 +316,17 @@ class MancalaGame:
         """ Checks if we can capture stones by checking if we land in an empty pit on our side
         Input: starting row, starting column, last row, last column, dictionary
         Output: None
-        Time complexity: O(1) """
+        Time complexity worst & average case: O(1) """
         if start_row == last_row and start_col != last_col and dictionary[f"Row_{last_row}"][last_col] == 1:
             dictionary[f"Row_{last_row}"][last_col] += dictionary[f"Row_{3 - last_row}"][last_col]
+            dictionary[f"Row_{3 - last_row}"][last_col] = 0
         return None
 
     def current_player_update(self, last_row: int, last_col: int) -> None:
         """ Updates the current player based on the last move
         Input: last row, last column
         Output: None
-        Time complexity: O(1) """
+        Time complexity worst & average case: O(1) """
         if last_row == 2 and last_col == -1:
             self.current_player = 1
             self.board.print("Player 1 goes again!")
@@ -352,14 +347,18 @@ class MancalaGame:
         """ Checks if the game is over and if so declares a winner. First to finish is always the winner.
         Input: None
         Output: bool
-        Time complexity: O(1) """
+        Time complexity worst & average case: O(1) """
         global FINAL_ROUND_SCORE
         for row in range(1, 3):
             if (self.board_dictionary[f"Row_{row}"] == [0, 0, 0, 0, 0, 0] or self.board_dictionary[
                 f"Row_{3 - row}"] == [0, 0, 0, 0, 0, 0]) and self.board_dictionary[f"Player{row}_score"] > \
                     self.board_dictionary[f"Player{3 - row}_score"]:
-                FINAL_ROUND_SCORE = self.board_dictionary[f"Player{row}_score"]
                 self.declare_winner(row)
+                return True
+            elif (self.board_dictionary[f"Row_{row}"] == [0, 0, 0, 0, 0, 0] or self.board_dictionary[
+                f"Row_{3 - row}"] == [0, 0, 0, 0, 0, 0]) and self.board_dictionary[f"Player{row}_score"] >= \
+                    self.board_dictionary[f"Player{3 - row}_score"]:
+                self.board.print("It's a draw! Press 'r' to restart, 'q' to quit or 'l' to see the leaderboard")
                 return True
         return False
 
@@ -367,7 +366,7 @@ class MancalaGame:
         """ This method declares the winner
         Input: first player to finish
         Output: bool
-        Time complexity: O(1) """
+        Time complexity worst & average case: O(1) """
         self.board_update(self.board_dictionary)
         self.board.cursor = None
         self.board.print(f"Player {player} wins! \n Press 'r' to restart, 'q' to quit or 'l' to see the leaderboard")
