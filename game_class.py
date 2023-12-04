@@ -372,7 +372,3 @@ class MancalaGame:
         self.board.cursor = None
         self.board.print(f"Player {player} wins! \n Press 'r' to restart, 'q' to quit or 'l' to see the leaderboard")
         return None
-
-# SOME NOTES
-# The time complexities for stone
-# 6. We need to add the stone images to the board (so layer the stones instead of the numbers)
