@@ -40,6 +40,11 @@ Please note in Toma's branch you may find an extended versio  of this game with 
 
 - Count seeds in the store; player with the most seeds wins.
 
+### Extra functionalities:
+- Press l to view the leaderboard
+- Press q to quit the game
+- Press r to restart
+
 ## Key Data Structures:
 
 ### Matrices:
