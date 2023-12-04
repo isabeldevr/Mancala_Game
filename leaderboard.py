@@ -8,7 +8,7 @@ def leaderboard_append(name, points):
     Input: name (str) - the name of the player
            points (int) - the number of points the player has
     Output: None
-    Time Complexity: O(1) """
+    Time Complexity worst & average case: O(1) """
     name = ''.join([char for char in name if char != ' '])
 
     try:
@@ -24,7 +24,7 @@ def leaderboard_read():
     """ Read the leaderboard
     Input: None
     Output: records (list) - a list of records
-    Time Complexity: O(n) """
+    Time Complexity worst & average case: O(n) """
     try:
         # Creating an empty list to store the records
         records = []
@@ -44,7 +44,7 @@ def merge_sort(records) -> list:
     """ Sort a list of records using merge sort
     Input: records (list) - a list of records
     Output: sorted_records (list) - a sorted list of records
-    Time Complexity: O(n log n) """
+    Time Complexity worst & average case: O(n log n) """
     if len(records) <= 1:
         return records
 
@@ -94,7 +94,7 @@ class LeaderboardUI:
         """ Populate the leaderboard with the records
         Input: None
         Output: None
-        Time Complexity: O(n log n) because of merge sort"""
+        Time Complexity worst & average case: O(n log n) we take n* because of merge sort"""
         records = leaderboard_read()
         sorted_records = merge_sort(records)
 
@@ -107,7 +107,7 @@ class LeaderboardUI:
         """ Submit the score to the leaderboard
         Input: points (int) - the number of points the player has
         Output: None
-        Time Complexity: O(1)"""
+        Time Complexity worst & average case: O(1)"""
         name = easygui.enterbox("Enter your name:")
         if name:
             leaderboard_append(name, points)
@@ -118,7 +118,7 @@ class LeaderboardUI:
         """ Function to quit the leaderboard
         Input: None
         Output: None
-        Time Complexity: O(1)"""
+        Time Complexity worst & average case: O(1)"""
         easygui.msgbox("Goodbye! :)")
         quit()
 
@@ -126,7 +126,7 @@ class LeaderboardUI:
         """ Show options for the leaderboard
         Input: None
         Output: None
-        Time Complexity: O(1)"""
+        Time Complexity worst & average case: O(1)"""
         choices = ["Submit Score", "View Leaderboard", "Quit"]
         choice = easygui.buttonbox("Select an option", "Leaderboard Options", choices=choices)
 
