@@ -61,8 +61,8 @@
 
 ### DFS sum
 - Used to transverse the tree of possible moves 
-- It adds the score by the human player (as a loss) and the ai (as a gain) to check what combination would be best. 
-- The entire implementation of the AI player includes a depth parameter that can be adjusted to make the ai think more turns ahead.
+- It adds the score by the human player (as a loss) and the AI (as a gain) to check what combination would be best. 
+- The entire implementation of the AI player includes a depth parameter that can be adjusted to make the AI think more turns ahead.
 
 ### Merge sort
 - Used to sort the leaderboard kept in leaderboard.txt
