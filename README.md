@@ -1,8 +1,12 @@
-# Mancala Game
+#  🧩 Mancala Game 🧩
 
-Please note in Toma's branch you may find an extended version of this game with a more complete UI implementation. We recommend only running if on windows.
+This repo was made for the final project of our algorithms class in 2nd year CSAI. Here is a quick demo :)
 
-## Rules of the Game
+https://github.com/isabeldevr/Mancala_Game/assets/130999443/fa1b7277-d02e-460a-b5f0-a083bb0da0d3
+
+Please note -> the main branch contains a simplified version of the UI. The extended version can be found under the Tomas branch.
+
+## Rules of the Game 📐
 
 ### Game Setup:
 
@@ -45,7 +49,7 @@ Please note in Toma's branch you may find an extended version of this game with 
 - Press q to quit the game
 - Press r to restart
 
-## Key Data Structures:
+## Key Data Structures ✔️
 
 ### Matrices:
 
@@ -64,7 +68,7 @@ Please note in Toma's branch you may find an extended version of this game with 
 - This helps the AI evaluate what move would lead to the best outcome
 
 
-## Key Algorithms:
+## Key Algorithms ✔️
 
 ### DFS sum
 - Used to transverse the tree of possible moves 
